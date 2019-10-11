@@ -106,13 +106,13 @@ public class DrawView extends View {
                 if (currentDrawPath == null) {
                     this.currentDrawPath = new DrawPath(currentPath);
                 }
+                allDrawItems.add(currentDrawPath);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 if (currentDrawPath != null) {
                     currentDrawPath.getPath().lineTo(x, y);
                     currentDrawPath.setColor(color);
                 }
-                allDrawItems.add(currentDrawPath);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -214,6 +214,18 @@ public class DrawView extends View {
         allDrawItems.clear();
         bgPaint.setColor(Color.WHITE);
         invalidate();
+    }
+
+    public void changeBack() {
+        int itemsSize = allDrawItems.size();
+        if (itemsSize > 0) {
+            CustomDrawable item = allDrawItems.get(allDrawItems.size() - 1);
+            if (item instanceof DrawPath) {
+                ((DrawPath) item).getPath().reset();
+            }
+            allDrawItems.remove(item);
+            invalidate();
+        }
     }
 
     public int getColor() {

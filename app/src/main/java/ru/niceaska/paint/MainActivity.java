@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonClear;
     private Spinner modeSpinner;
     private Spinner colorSpinner;
+    private ImageButton buttonBack;
     private DrawView drawView;
     private List<DrawColor> colorsList = Arrays.asList(DrawColor.values());
 
@@ -34,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
                 drawView.clear();
             }
         });
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                drawView.changeBack();
+            }
+        });
+
         modeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -79,8 +90,7 @@ public class MainActivity extends AppCompatActivity {
         drawView = findViewById(R.id.drawview);
         modeSpinner = findViewById(R.id.spinner_draw_mode);
         colorSpinner = findViewById(R.id.spinner_draw_color);
-
+        buttonBack = findViewById(R.id.button_back);
     }
-
 
 }
