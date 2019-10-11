@@ -29,9 +29,7 @@ public class DrawView extends View {
     private Paint boxPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint bgPaint = new Paint();
 
-    private List<Box> boxList = new ArrayList<>();
-    private List<Line> lineList = new ArrayList<>();
-    private List<DrawPath> drawPaths = new ArrayList<>();
+    private List<CustomDrawable> allDrawItems = new ArrayList<>();
 
     private Box currentBox;
     private Path currentPath;
@@ -69,10 +67,10 @@ public class DrawView extends View {
         float y = event.getY();
 
         PointF current = new PointF(x, y);
-        switch(action) {
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 this.currentLine = new Line(current, color);
-                lineList.add(currentLine);
+                allDrawItems.add(currentLine);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (currentLine != null) {
@@ -97,7 +95,7 @@ public class DrawView extends View {
         float x = event.getX();
         float y = event.getY();
 
-        switch(action) {
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 if (this.currentPath == null) {
                     this.currentPath = new Path();
@@ -114,7 +112,7 @@ public class DrawView extends View {
                     currentDrawPath.getPath().lineTo(x, y);
                     currentDrawPath.setColor(color);
                 }
-                drawPaths.add(currentDrawPath);
+                allDrawItems.add(currentDrawPath);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -135,10 +133,10 @@ public class DrawView extends View {
         float y = event.getY();
 
         PointF current = new PointF(x, y);
-        switch(action) {
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 this.currentBox = new Box(current, color);
-                boxList.add(currentBox);
+                allDrawItems.add(currentBox);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (currentBox != null) {
@@ -161,43 +159,45 @@ public class DrawView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawPaint(bgPaint);
-        setUpPaint();
-        drawPath(canvas);
-        drawRect(canvas);
-        drawLine(canvas);
-    }
-
-    private void drawLine(Canvas canvas) {
-        for (Line line : lineList) {
-            float left = line.getOrigin().x;
-            float top = line.getOrigin().y;
-
-            float right = (line.getCurrent().x < left) ? Math.min(line.getCurrent().x, line.getOrigin().x) :
-                    Math.max(line.getCurrent().x, line.getOrigin().x);
-            float bottom = (line.getCurrent().y < top) ? Math.min(line.getCurrent().y, line.getOrigin().y) :
-                    Math.max(line.getCurrent().y, line.getOrigin().y);
-            drawPaint.setColor(line.getColor());
-            canvas.drawLine(left, top, right, bottom, drawPaint);
+        for (CustomDrawable drawItem : allDrawItems) {
+            if (drawItem instanceof DrawPath) {
+                drawPath((DrawPath) drawItem, canvas);
+            } else if (drawItem instanceof Box) {
+                drawRect((Box) drawItem, canvas);
+            } else if (drawItem instanceof Line) {
+                drawLine((Line) drawItem, canvas);
+            } else {
+                throw new IllegalArgumentException();
+            }
         }
     }
 
-    private void drawPath(Canvas canvas) {
-        for (DrawPath drawPath : drawPaths) {
-            Path path = drawPath.getPath();
-            drawPaint.setColor(drawPath.getColor());
-            canvas.drawPath(path, drawPaint);
-        }
+    private void drawLine(Line line, Canvas canvas) {
+        float left = line.getOrigin().x;
+        float top = line.getOrigin().y;
+
+        float right = (line.getCurrent().x < left) ? Math.min(line.getCurrent().x, line.getOrigin().x) :
+                Math.max(line.getCurrent().x, line.getOrigin().x);
+        float bottom = (line.getCurrent().y < top) ? Math.min(line.getCurrent().y, line.getOrigin().y) :
+                Math.max(line.getCurrent().y, line.getOrigin().y);
+        drawPaint.setColor(line.getColor());
+        canvas.drawLine(left, top, right, bottom, drawPaint);
+
     }
 
-    private void drawRect(Canvas canvas) {
-        for (Box box : boxList) {
-            float left = Math.min(box.getCurrent().x, box.getOrigin().x);
-            float right = Math.max(box.getCurrent().x, box.getOrigin().x);
-            float top = Math.min(box.getCurrent().y, box.getOrigin().y);
-            float bottom = Math.max(box.getCurrent().y, box.getOrigin().y);
-            boxPaint.setColor(box.getColor());
-            canvas.drawRect(left, top, right, bottom, boxPaint);
-        }
+    private void drawPath(DrawPath drawPath, Canvas canvas) {
+        Path path = drawPath.getPath();
+        drawPaint.setColor(drawPath.getColor());
+        canvas.drawPath(path, drawPaint);
+    }
+
+    private void drawRect(Box box, Canvas canvas) {
+        float left = Math.min(box.getCurrent().x, box.getOrigin().x);
+        float right = Math.max(box.getCurrent().x, box.getOrigin().x);
+        float top = Math.min(box.getCurrent().y, box.getOrigin().y);
+        float bottom = Math.max(box.getCurrent().y, box.getOrigin().y);
+        boxPaint.setColor(box.getColor());
+        canvas.drawRect(left, top, right, bottom, boxPaint);
     }
 
     private void setUpPaint() {
@@ -211,9 +211,7 @@ public class DrawView extends View {
     }
 
     public void clear() {
-        drawPaths.clear();
-        lineList.clear();
-        boxList.clear();
+        allDrawItems.clear();
         bgPaint.setColor(Color.WHITE);
         invalidate();
     }

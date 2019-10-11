@@ -2,7 +2,7 @@ package ru.niceaska.paint;
 
 import android.graphics.PointF;
 
-public class Box {
+public class Box implements CustomDrawable {
 
     private PointF origin;
     private PointF current;

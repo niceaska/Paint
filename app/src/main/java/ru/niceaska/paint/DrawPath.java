@@ -2,7 +2,7 @@ package ru.niceaska.paint;
 
 import android.graphics.Path;
 
-public class DrawPath {
+public class DrawPath implements CustomDrawable {
     private Path path;
     private int color;
 

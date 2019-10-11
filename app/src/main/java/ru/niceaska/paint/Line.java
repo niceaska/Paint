@@ -2,7 +2,7 @@ package ru.niceaska.paint;
 
 import android.graphics.PointF;
 
-public class Line {
+public class Line implements CustomDrawable {
     private PointF origin;
     private PointF current;
     private int color;

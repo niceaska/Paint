@@ -1,7 +1,5 @@
 package ru.niceaska.paint;
 
-import android.graphics.Color;
-
 public enum DrawColor {
     RED(R.string.red, R.color.red),
     GREEN(R.string.green, R.color.green),
