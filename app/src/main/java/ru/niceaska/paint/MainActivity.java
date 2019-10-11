@@ -9,13 +9,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button buttonClear;
     private Spinner modeSpinner;
+    private Spinner colorSpinner;
     private DrawView drawView;
+    private List<DrawColor> colorsList = Arrays.asList(DrawColor.values());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         initModeSpinner();
+        initColorSpinner();
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,9 +45,26 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        }
-        );
+        });
+        colorSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
 
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int color = getResources().getColor(colorsList.get(position).getColor());
+                drawView.setColor(color);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+    private void initColorSpinner() {
+        colorSpinner.setAdapter(new ColorSpinnerAdapter(this, colorsList));
     }
 
     private void initModeSpinner() {
@@ -57,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         modeSpinner = findViewById(R.id.spinner_draw_mode);
         drawView = findViewById(R.id.drawview);
         modeSpinner = findViewById(R.id.spinner_draw_mode);
+        colorSpinner = findViewById(R.id.spinner_draw_color);
 
     }
 

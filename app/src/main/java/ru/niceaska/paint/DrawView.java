@@ -28,11 +28,14 @@ public class DrawView extends View {
     private Paint drawPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint boxPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint bgPaint = new Paint();
-    private Path path = new Path();
 
     private List<Box> boxList = new ArrayList<>();
     private List<Line> lineList = new ArrayList<>();
+    private List<DrawPath> drawPaths = new ArrayList<>();
+
     private Box currentBox;
+    private Path currentPath;
+    private DrawPath currentDrawPath;
     private Line currentLine;
 
     public DrawView(Context context) {
@@ -68,7 +71,7 @@ public class DrawView extends View {
         PointF current = new PointF(x, y);
         switch(action) {
             case MotionEvent.ACTION_DOWN:
-                this.currentLine = new Line(current);
+                this.currentLine = new Line(current, color);
                 lineList.add(currentLine);
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -91,17 +94,32 @@ public class DrawView extends View {
     private boolean simpleDrawEvent(MotionEvent event) {
 
         int action = event.getAction();
-
         float x = event.getX();
         float y = event.getY();
 
         switch(action) {
             case MotionEvent.ACTION_DOWN:
-                path.moveTo(x, y);
+                if (this.currentPath == null) {
+                    this.currentPath = new Path();
+                } else {
+                    this.currentPath.reset();
+                }
+                currentPath.moveTo(x, y);
+                if (currentDrawPath == null) {
+                    this.currentDrawPath = new DrawPath(currentPath);
+                }
                 return true;
             case MotionEvent.ACTION_MOVE:
+                if (currentDrawPath != null) {
+                    currentDrawPath.getPath().lineTo(x, y);
+                    currentDrawPath.setColor(color);
+                }
+                drawPaths.add(currentDrawPath);
+                break;
+            case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                path.lineTo(x, y);
+                currentDrawPath = null;
+                currentPath = null;
                 break;
             default:
                 return super.onTouchEvent(event);
@@ -119,7 +137,7 @@ public class DrawView extends View {
         PointF current = new PointF(x, y);
         switch(action) {
             case MotionEvent.ACTION_DOWN:
-                this.currentBox = new Box(current);
+                this.currentBox = new Box(current, color);
                 boxList.add(currentBox);
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -143,7 +161,7 @@ public class DrawView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawPaint(bgPaint);
-
+        setUpPaint();
         drawPath(canvas);
         drawRect(canvas);
         drawLine(canvas);
@@ -158,13 +176,17 @@ public class DrawView extends View {
                     Math.max(line.getCurrent().x, line.getOrigin().x);
             float bottom = (line.getCurrent().y < top) ? Math.min(line.getCurrent().y, line.getOrigin().y) :
                     Math.max(line.getCurrent().y, line.getOrigin().y);
-            canvas.drawLine(left, top,
-                   right, bottom, drawPaint);
+            drawPaint.setColor(line.getColor());
+            canvas.drawLine(left, top, right, bottom, drawPaint);
         }
     }
 
     private void drawPath(Canvas canvas) {
-        canvas.drawPath(path, drawPaint);
+        for (DrawPath drawPath : drawPaths) {
+            Path path = drawPath.getPath();
+            drawPaint.setColor(drawPath.getColor());
+            canvas.drawPath(path, drawPaint);
+        }
     }
 
     private void drawRect(Canvas canvas) {
@@ -173,22 +195,23 @@ public class DrawView extends View {
             float right = Math.max(box.getCurrent().x, box.getOrigin().x);
             float top = Math.min(box.getCurrent().y, box.getOrigin().y);
             float bottom = Math.max(box.getCurrent().y, box.getOrigin().y);
+            boxPaint.setColor(box.getColor());
             canvas.drawRect(left, top, right, bottom, boxPaint);
         }
     }
 
     private void setUpPaint() {
         bgPaint.setColor(Color.WHITE);
-        drawPaint.setColor(Color.RED);
+        drawPaint.setColor(color);
         drawPaint.setAntiAlias(true);
         drawPaint.setStrokeWidth(10);
         drawPaint.setStyle(Paint.Style.STROKE);
         boxPaint.setStyle(Paint.Style.FILL);
-        boxPaint.setColor(Color.RED);
+        boxPaint.setColor(color);
     }
 
     public void clear() {
-        path.reset();
+        drawPaths.clear();
         lineList.clear();
         boxList.clear();
         bgPaint.setColor(Color.WHITE);
