@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Paint</string>
+    <string-array name="draw_modes">
+        <item>Точка</item>
+        <item>Квадрат</item>
+        <item>Линия</item>
+    </string-array>
+</resources>
