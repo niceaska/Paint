@@ -14,4 +14,8 @@
     <string name="yellow">Желтый</string>
     <string name="purple">Фиолетовый</string>
     <string name="orange">Оранжевый</string>
+    <string name="ok_button">Хорошо</string>
+    <string name="cancel_button">Отмена</string>
+
+    <string name="dialog_title">Ширина кисти</string>
 </resources>

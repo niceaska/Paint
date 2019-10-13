@@ -1,6 +1,8 @@
 package ru.niceaska.paint;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.niceaska.paint.models.Box;
+import ru.niceaska.paint.models.DrawPath;
 import ru.niceaska.paint.models.Figure;
 import ru.niceaska.paint.models.Line;
 
@@ -25,12 +28,15 @@ import ru.niceaska.paint.models.Line;
 public class DrawView extends View {
 
     private int color;
-    private int mode = 0;
+    private int strokeWidth;
+    private int mode;
 
     private static final int SIMPLE_MODE = 0;
     private static final int BOX_MODE = 1;
     private static final int LINE_MODE = 2;
     private static final int FIGURE_MODE = 3;
+
+    private static final int DEFAULT_STROKE_SIZE = 10;
 
     private Paint drawPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint boxPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -48,12 +54,28 @@ public class DrawView extends View {
 
     public DrawView(Context context) {
         super(context, null);
+        obtainAttrs(context, null);
         setUpPaint();
     }
 
     public DrawView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        obtainAttrs(context, attrs);
         setUpPaint();
+    }
+
+    private void obtainAttrs(Context context, AttributeSet attrs) {
+        final Resources.Theme theme  = context.getTheme();
+        final TypedArray typedArray = theme.obtainStyledAttributes(attrs, R.styleable.DrawView,
+                0, 0);
+        try {
+            color = typedArray.getInteger( R.styleable.DrawView_color,
+                        context.getResources().getColor(R.color.black));
+            strokeWidth = typedArray.getInteger( R.styleable.DrawView_stroke_width, DEFAULT_STROKE_SIZE);
+            mode = typedArray.getInteger( R.styleable.DrawView_mode, 0);
+        } finally {
+            typedArray.recycle();
+        }
     }
 
     @Override
@@ -85,7 +107,7 @@ public class DrawView extends View {
         PointF current = new PointF(x, y);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                this.currentLine = new Line(current, color);
+                this.currentLine = new Line(current, color, strokeWidth);
                 allDrawItems.add(currentLine);
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -120,7 +142,7 @@ public class DrawView extends View {
                 }
                 currentPath.moveTo(x, y);
                 if (currentDrawPath == null) {
-                    this.currentDrawPath = new DrawPath(currentPath);
+                    this.currentDrawPath = new DrawPath(currentPath, strokeWidth);
                 }
                 allDrawItems.add(currentDrawPath);
                 return true;
@@ -178,7 +200,7 @@ public class DrawView extends View {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 if (currentFigure == null) {
-                    currentFigure = new Figure(color);
+                    currentFigure = new Figure(color, strokeWidth);
                 }
                 SparseArray<PointF> currentPoints = currentFigure.getPoints();
                 currentPoints.put(pointerId, new PointF(event.getX(event.getActionIndex()),
@@ -242,6 +264,7 @@ public class DrawView extends View {
         float bottom = (line.getCurrent().y < top) ? Math.min(line.getCurrent().y, line.getOrigin().y) :
                 Math.max(line.getCurrent().y, line.getOrigin().y);
         drawPaint.setColor(line.getColor());
+        drawPaint.setStrokeWidth(line.getStroke());
         canvas.drawLine(left, top, right, bottom, drawPaint);
 
     }
@@ -249,6 +272,7 @@ public class DrawView extends View {
     private void drawPath(DrawPath drawPath, Canvas canvas) {
         Path path = drawPath.getPath();
         drawPaint.setColor(drawPath.getColor());
+        drawPaint.setStrokeWidth(drawPath.getStroke());
         canvas.drawPath(path, drawPaint);
     }
 
@@ -264,10 +288,12 @@ public class DrawView extends View {
     private void drawFigure(Figure figure, Canvas canvas) {
 
         drawPaint.setColor(figure.getColor());
+        drawPaint.setStrokeWidth(figure.getStroke());
 
         SparseArray<PointF> points = figure.getPoints();
 
         if (points.size() == 0) return;
+
 
         if (points.size() == 1) {
             PointF point = points.get(0);
@@ -278,7 +304,6 @@ public class DrawView extends View {
             for (int i = 1;  i < points.size(); i++) {
                 PointF one = points.get(i - 1);
                 PointF two = points.get(i);
-
                 canvas.drawLine(one.x, one.y, two.x, two.y, drawPaint);
             }
         }
@@ -287,8 +312,7 @@ public class DrawView extends View {
     private void setUpPaint() {
         bgPaint.setColor(Color.WHITE);
         drawPaint.setColor(color);
-        drawPaint.setAntiAlias(true);
-        drawPaint.setStrokeWidth(10);
+        drawPaint.setStrokeWidth(strokeWidth);
         drawPaint.setStyle(Paint.Style.STROKE);
         boxPaint.setStyle(Paint.Style.FILL);
         boxPaint.setColor(color);
@@ -397,5 +421,13 @@ public class DrawView extends View {
 
     public boolean isScrollGesture() {
         return scrollGesture;
+    }
+
+    public void setStrokeWidth(int strokeWidth) {
+        this.strokeWidth = strokeWidth;
+    }
+
+    public int getStrokeWidth() {
+        return strokeWidth;
     }
 }

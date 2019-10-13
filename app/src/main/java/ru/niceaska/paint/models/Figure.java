@@ -9,9 +9,11 @@ public class Figure implements CustomDrawable {
 
     private SparseArray<PointF> points = new SparseArray<>();
     private int color;
+    private int stroke;
 
-    public Figure(int color) {
+    public Figure(int color, int stroke) {
         this.color = color;
+        this.stroke = stroke;
     }
 
     public int getColor() {
@@ -21,5 +23,9 @@ public class Figure implements CustomDrawable {
 
     public SparseArray<PointF> getPoints() {
         return points;
+    }
+
+    public int getStroke() {
+        return stroke;
     }
 }

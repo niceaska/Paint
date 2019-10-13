@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
@@ -19,16 +18,21 @@ import ru.niceaska.paint.models.DrawColor;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button buttonClear;
+    private ImageButton buttonClear;
     private Spinner modeSpinner;
     private Spinner colorSpinner;
     private ImageButton buttonBack;
     private ImageButton buttonScroll;
+    private ImageButton buttonStroke;
+    private StrokeWidthFragment strokeWidthFragment;
     private DrawView drawView;
     private List<DrawColor> colorsList = Arrays.asList(DrawColor.values());
 
+    private static final String widthDialog = "WIDTH_DIALOG";
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -47,6 +51,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawView.changeBack();
+            }
+        });
+
+        buttonStroke.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                strokeWidthFragment.show(getSupportFragmentManager(), widthDialog);
             }
         });
 
@@ -119,7 +130,10 @@ public class MainActivity extends AppCompatActivity {
         colorSpinner = findViewById(R.id.spinner_draw_color);
         buttonBack = findViewById(R.id.button_back);
         buttonScroll = findViewById(R.id.button_scroll_mode);
+        strokeWidthFragment = new StrokeWidthFragment(drawView);
+        buttonStroke = findViewById(R.id.button_stroke_width);
         buttonScroll.setEnabled(false);
+
     }
 
 }
