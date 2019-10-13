@@ -27,8 +27,27 @@ public class StrokeWidthFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.stroke_width_dialog, null);
         final SeekBar strokeWidth = dialogView.findViewById(R.id.dialog_seekbar);
+        final int currentProgress = drawView.getStrokeWidth();
 
-        strokeWidth.setProgress(drawView.getStrokeWidth());
+        strokeWidth.setProgress(currentProgress);
+
+        strokeWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                drawView.setStrokeWidth(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         builder.setView(dialogView)
                 .setTitle(R.string.dialog_title)
                 .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
@@ -40,6 +59,7 @@ public class StrokeWidthFragment extends DialogFragment {
                 .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        drawView.setStrokeWidth(currentProgress);
                     }
                 });
         return builder.create();

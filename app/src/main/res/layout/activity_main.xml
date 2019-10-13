@@ -8,71 +8,95 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/draw_tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/button_drawview"
-            style="@style/image_button_style"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_autorenew_black_24dp" />
+            android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/spinner_draw_mode"
-            android:layout_width="0dp"
+            <ImageButton
+                android:id="@+id/button_drawview"
+                style="@style/image_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_autorenew_black_24dp" />
+
+            <Spinner
+                android:id="@+id/spinner_draw_mode"
+                style="@style/spinner_margin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/button_back"
+                style="@style/image_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reverse_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/button_hide_tools"
+                style="@style/image_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_drop_up_black_24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/spinner_margin"
+            android:orientation="horizontal">
 
-            android:layout_weight="1" />
+            <Spinner
+                android:id="@+id/spinner_draw_color"
+                style="@style/spinner_margin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/button_back"
-            style="@style/image_button_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_reverse_black_24dp" />
+            <ImageButton
+                android:id="@+id/button_stroke_width"
+                style="@style/image_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_mode_edit_black_24dp" />
 
-        <ImageButton
-            android:id="@+id/button_scroll_mode"
-            style="@style/image_button_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_gesture_black_24dp" />
+            <ImageButton
+                android:id="@+id/button_scroll_mode"
+                style="@style/image_button_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_gesture_black_24dp" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/background_dark" />
+
     </LinearLayout>
 
-    <LinearLayout
+    <ImageButton
+        android:id="@+id/button_drop_down"
+        style="@style/image_button_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:id="@+id/spinner_draw_color"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/spinner_margin" />
-
-        <ImageButton
-            android:id="@+id/button_stroke_width"
-            style="@style/image_button_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_mode_edit_black_24dp" />
-    </LinearLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/background_dark" />
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        android:src="@drawable/ic_arrow_drop_down_black_24dp" />
 
     <ru.niceaska.paint.DrawView
         android:id="@+id/drawview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />.
+        android:layout_weight="1" />
 
 
 </LinearLayout>
