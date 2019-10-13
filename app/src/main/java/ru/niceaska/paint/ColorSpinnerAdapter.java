@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import ru.niceaska.paint.models.DrawColor;
+
 public class ColorSpinnerAdapter extends ArrayAdapter<DrawColor> {
 
 

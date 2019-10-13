@@ -10,4 +10,5 @@
     <color name="blue">@android:color/holo_blue_bright</color>
     <color name="purple">@android:color/holo_purple</color>
     <color name="black">#000000</color>
+    <color name="grey">#FF888888</color>
 </resources>

@@ -1,6 +1,8 @@
-package ru.niceaska.paint;
+package ru.niceaska.paint.models;
 
 import android.graphics.PointF;
+
+import ru.niceaska.paint.CustomDrawable;
 
 public class Box implements CustomDrawable {
 

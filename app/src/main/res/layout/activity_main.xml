@@ -25,6 +25,14 @@
         android:padding="8dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_reverse_black_24dp" />
+        <ImageButton
+            android:id="@+id/button_scroll_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_gesture_black_24dp" />
 </LinearLayout>
 
     <Spinner

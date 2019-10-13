@@ -4,6 +4,7 @@
         <item>Точка</item>
         <item>Квадрат</item>
         <item>Линия</item>
+        <item>Фигура</item>
     </string-array>
     
     <string name="red">Красный</string>

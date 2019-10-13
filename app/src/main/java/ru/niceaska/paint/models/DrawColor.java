@@ -1,4 +1,6 @@
-package ru.niceaska.paint;
+package ru.niceaska.paint.models;
+
+import ru.niceaska.paint.R;
 
 public enum DrawColor {
     RED(R.string.red, R.color.red),
