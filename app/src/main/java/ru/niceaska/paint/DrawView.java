@@ -291,11 +291,11 @@ public class DrawView extends View {
         drawPaint.setStrokeWidth(figure.getStroke());
 
         SparseArray<PointF> points = figure.getPoints();
+        int pointsSize = points.size();
 
-        if (points.size() == 0) return;
+        if (pointsSize == 0) return;
 
-
-        if (points.size() == 1) {
+        if (pointsSize == 1) {
             PointF point = points.get(0);
             if (point == null ) return;
             canvas.drawPoint(point.x, point.y, drawPaint);
@@ -304,6 +304,11 @@ public class DrawView extends View {
             for (int i = 1;  i < points.size(); i++) {
                 PointF one = points.get(i - 1);
                 PointF two = points.get(i);
+                canvas.drawLine(one.x, one.y, two.x, two.y, drawPaint);
+            }
+            if (pointsSize > 2) {
+                PointF one = points.get(pointsSize - 1);
+                PointF two = points.get(0);
                 canvas.drawLine(one.x, one.y, two.x, two.y, drawPaint);
             }
         }
