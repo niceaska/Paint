@@ -17,7 +17,7 @@ import java.util.List;
 
 import ru.niceaska.paint.models.DrawColor;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements StrokeWidthChanger {
 
     private ImageButton buttonClear;
     private Spinner modeSpinner;
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         buttonStroke.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                strokeWidthFragment = StrokeWidthFragment.newInstance(drawView.getStrokeWidth());
                 strokeWidthFragment.show(getSupportFragmentManager(), WIDTH_DIALOG);
             }
         });
@@ -165,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
         colorSpinner = findViewById(R.id.spinner_draw_color);
         buttonBack = findViewById(R.id.button_back);
         buttonScroll = findViewById(R.id.button_scroll_mode);
-        strokeWidthFragment = new StrokeWidthFragment(drawView);
         buttonStroke = findViewById(R.id.button_stroke_width);
         buttonHideTools = findViewById(R.id.button_hide_tools);
         buttonShowTools = findViewById(R.id.button_drop_down);
@@ -187,5 +187,10 @@ public class MainActivity extends AppCompatActivity {
             toolsView.setVisibility(View.GONE);
             buttonShowTools.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void changeStrokeWidth(int width) {
+        drawView.setStrokeWidth(width);
     }
 }
